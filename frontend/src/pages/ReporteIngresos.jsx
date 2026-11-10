@@ -20,6 +20,7 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/table';
+import { printPage } from '@/lib/desktop';
 
 const monthlyData = [
   {
@@ -116,7 +117,7 @@ export default function ReporteIngresos({ onBack }) {
         <div>
           <Button
             type="button"
-            onClick={() => window.print()}
+            onClick={printPage}
             className="inline-flex items-center gap-2 bg-[#1b4ed8] hover:bg-[#1e40af] text-white text-xs font-semibold px-4 py-2.5 h-auto rounded-lg shadow-xs cursor-pointer"
           >
             <Download className="w-4 h-4" />

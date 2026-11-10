@@ -7,6 +7,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Rutas relativas: la UI se carga dentro de la ventana de escritorio (pywebview)
+  base: './',
   plugins: [react()],
   resolve: {
     alias: {

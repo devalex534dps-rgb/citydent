@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Pencil, Mail, Phone, Lock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,9 +7,31 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { pickImage } from '@/lib/desktop';
 
 export default function Cuenta() {
   const fileInputRef = useRef(null);
+  // Vista previa local de la foto elegida (no se guarda en ningún lado)
+  const [avatarSrc, setAvatarSrc] = useState('/elena-avatar.png');
+
+  const handleChangePhoto = async () => {
+    const result = await pickImage();
+    if (result === undefined) {
+      // Navegador: selector de archivos HTML
+      fileInputRef.current?.click();
+      return;
+    }
+    if (result?.error) {
+      window.alert(result.error);
+    } else if (result?.dataUrl) {
+      setAvatarSrc(result.dataUrl);
+    }
+  };
+
+  const handleFileInput = (e) => {
+    const file = e.target.files?.[0];
+    if (file) setAvatarSrc(URL.createObjectURL(file));
+  };
 
   return (
     <div className="max-w-7xl w-full">
@@ -35,7 +57,7 @@ export default function Cuenta() {
             <div className="relative mb-5">
               <Avatar className="w-28 h-28 border-2 border-slate-100 shadow-xs">
                 <AvatarImage
-                  src="/elena-avatar.png"
+                  src={avatarSrc}
                   alt="Avatar de Dr. Elena Rostova"
                 />
                 <AvatarFallback>ER</AvatarFallback>
@@ -45,13 +67,14 @@ export default function Cuenta() {
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
+                onChange={handleFileInput}
                 className="hidden"
               />
 
               {/* Botón de Editar Foto (Lápiz Azul) */}
               <Button
                 size="icon"
-                onClick={() => fileInputRef.current?.click()}
+                onClick={handleChangePhoto}
                 className="absolute bottom-1 right-0 w-8 h-8 bg-[#164ec6] hover:bg-blue-700 text-white rounded-full shadow-sm cursor-pointer"
                 title="Cambiar foto"
                 type="button"
